@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Tempo de geração: 28/03/2020 às 17:07
+-- Tempo de geração: 28/03/2020 às 23:15
 -- Versão do servidor: 5.7.29-0ubuntu0.16.04.1
 -- Versão do PHP: 7.3.15
 
@@ -39,7 +39,22 @@ CREATE TABLE `emissor_cadastros_dados` (
   `IE` varchar(14) NOT NULL,
   `ISUF` varchar(9) DEFAULT NULL,
   `IM` varchar(15) DEFAULT NULL,
-  `email` varchar(60) DEFAULT NULL
+  `email` varchar(60) DEFAULT NULL,
+  `logo` varchar(100) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `emissor_cadastros_dados_emissores`
+--
+
+CREATE TABLE `emissor_cadastros_dados_emissores` (
+  `id` int(11) NOT NULL,
+  `emissor_cadastro_dado_id` int(11) NOT NULL,
+  `emissor_tipo_regime_tributario_id` int(11) NOT NULL,
+  `cnae` varchar(20) NOT NULL,
+  `ultima_nf` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -18296,6 +18311,14 @@ ALTER TABLE `emissor_cadastros_dados`
   ADD KEY `indIEDest` (`indIEDest`);
 
 --
+-- Índices de tabela `emissor_cadastros_dados_emissores`
+--
+ALTER TABLE `emissor_cadastros_dados_emissores`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `emissor_cadastro_dado_id` (`emissor_cadastro_dado_id`),
+  ADD KEY `emissor_tipo_regime_tributario_id` (`emissor_tipo_regime_tributario_id`);
+
+--
 -- Índices de tabela `emissor_cadastros_enderecos`
 --
 ALTER TABLE `emissor_cadastros_enderecos`
@@ -18459,6 +18482,12 @@ ALTER TABLE `pais`
 -- AUTO_INCREMENT de tabela `emissor_cadastros_dados`
 --
 ALTER TABLE `emissor_cadastros_dados`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de tabela `emissor_cadastros_dados_emissores`
+--
+ALTER TABLE `emissor_cadastros_dados_emissores`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
