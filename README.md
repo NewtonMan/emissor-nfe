@@ -25,3 +25,50 @@ Este projeto tem como objetivo estabelecer uma ferramenta de emissão de documen
  - Importação TXT
  - Importação XML
  - Exportação TXT
+
+# SCHEMA 4.00 e responsáveis
+## Veja abaixo as tags atendidas e não atendidas pelo projeto com seus respectivos responsáveis
+- [x] ide = @NewtonMan
+- [x] emit = @NewtonMan
+    - [x] enderEmit = @NewtonMan
+- [x] dest = @NewtonMan
+    - [x] enderDest = @NewtonMan
+- [x] retirada = @NewtonMan
+- [x] entrega = @NewtonMan
+- [x] det = @NewtonMan
+    - [x] prod = @NewtonMan
+    - [x] imposto = @NewtonMan
+        - [x] ICMS = @NewtonMan
+            - [x] ICMSUFDest = @NewtonMan
+        - [x] IPI = @NewtonMan
+        - [x] PIS = @NewtonMan
+        - [x] COFINS = @NewtonMan
+        - [x] II = @NewtonMan
+        - [ ] ISSQN
+        - [ ] ICMSST
+        - [ ] IPIST
+        - [ ] PISST
+        - [ ] COFINSST
+- [x] total = @NewtonMan
+- [x] impostos = @NewtonMan
+    - [x] ICMSTot = @NewtonMan
+    - [ ] ISSQNtot
+    - [ ] retTrib
+- [x] NFref = @NewtonMan
+    - [x] refNFe = @NewtonMan
+    - [x] refCTe = @NewtonMan
+    - [ ] refNF
+    - [ ] refNFP
+    - [ ] refECF
+- [x] transp = @NewtonMan
+- [x] infAdFisco = @NewtonMan
+- [x] infCpl = @NewtonMan
+- [ ] cobr
+- [ ] compra
+- [ ] exporta
+- [ ] cana
+- [x] autXML = @NewtonMan
+- [x] pag = @NewtonMan
+    - [x] tPag = @NewtonMan
+    - [x] detPag = @NewtonMan
+    - [x] card = @NewtonMan
