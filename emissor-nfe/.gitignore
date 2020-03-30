@@ -1,10 +1,10 @@
 # CakePHP specific files #
 ##########################
-/emissor-nfe/config/app_local.php
-/emissor-nfe/config/.env
-/emissor-nfe/logs/*
-/emissor-nfe/tmp/*
-/emissor-nfe/vendor/*
+/config/app_local.php
+/config/.env
+/logs/*
+/tmp/*
+/vendor/*
 
 # OS generated files #
 ######################
@@ -41,4 +41,3 @@ nbproject/*
 .vscode
 # Sass preprocessor
 .sass-cache/
-.env
