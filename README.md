@@ -30,9 +30,7 @@ Este projeto tem como objetivo estabelecer uma ferramenta de emissão de documen
 ## Veja abaixo as tags atendidas e não atendidas pelo projeto com seus respectivos responsáveis
 - [x] ide = @NewtonMan
 - [x] emit = @NewtonMan
-    - [x] enderEmit = @NewtonMan
 - [x] dest = @NewtonMan
-    - [x] enderDest = @NewtonMan
 - [x] retirada = @NewtonMan
 - [x] entrega = @NewtonMan
 - [x] det = @NewtonMan
@@ -69,6 +67,3 @@ Este projeto tem como objetivo estabelecer uma ferramenta de emissão de documen
 - [ ] cana
 - [x] autXML = @NewtonMan
 - [x] pag = @NewtonMan
-    - [x] tPag = @NewtonMan
-    - [x] detPag = @NewtonMan
-    - [x] card = @NewtonMan
