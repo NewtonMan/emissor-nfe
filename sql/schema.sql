@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Tempo de geração: 28/03/2020 às 23:15
+-- Tempo de geração: 30/03/2020 às 17:25
 -- Versão do servidor: 5.7.29-0ubuntu0.16.04.1
 -- Versão do PHP: 7.3.15
 
@@ -40,7 +40,9 @@ CREATE TABLE `emissor_cadastros_dados` (
   `ISUF` varchar(9) DEFAULT NULL,
   `IM` varchar(15) DEFAULT NULL,
   `email` varchar(60) DEFAULT NULL,
-  `logo` varchar(100) DEFAULT NULL
+  `logo` varchar(100) DEFAULT NULL,
+  `created` datetime NOT NULL,
+  `modified` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -51,8 +53,8 @@ CREATE TABLE `emissor_cadastros_dados` (
 
 CREATE TABLE `emissor_cadastros_dados_emissores` (
   `id` int(11) NOT NULL,
-  `emissor_cadastro_dado_id` int(11) NOT NULL,
-  `emissor_tipo_regime_tributario_id` int(11) NOT NULL,
+  `emissor_cadastros_dados_id` int(11) NOT NULL,
+  `emissor_tipos_regimes_tributarios_id` int(11) NOT NULL,
   `cnae` varchar(20) NOT NULL,
   `ultima_nf` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -65,7 +67,7 @@ CREATE TABLE `emissor_cadastros_dados_emissores` (
 
 CREATE TABLE `emissor_cadastros_enderecos` (
   `id` int(11) NOT NULL,
-  `emissor_cadastro_dados_id` int(11) NOT NULL,
+  `emissor_cadastros_dados_id` int(11) NOT NULL,
   `tipo_endereco` varchar(20) DEFAULT NULL,
   `xLgr` varchar(60) NOT NULL,
   `nro` varchar(60) NOT NULL,
@@ -76,7 +78,9 @@ CREATE TABLE `emissor_cadastros_enderecos` (
   `UF` varchar(2) NOT NULL,
   `CEP` varchar(8) NOT NULL,
   `cPais` varchar(4) DEFAULT NULL,
-  `xPais` varchar(60) DEFAULT NULL
+  `xPais` varchar(60) DEFAULT NULL,
+  `created` datetime NOT NULL,
+  `modified` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -87,8 +91,282 @@ CREATE TABLE `emissor_cadastros_enderecos` (
 
 CREATE TABLE `emissor_cadastros_tipos` (
   `id` int(11) NOT NULL,
-  `emissor_cadastro_dado_id` int(11) NOT NULL,
-  `emissor_tipo_cadastro_id` int(11) NOT NULL
+  `emissor_cadastros_dados_id` int(11) NOT NULL,
+  `emissor_tipos_cadastros_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `emissor_documentos`
+--
+
+CREATE TABLE `emissor_documentos` (
+  `id` int(11) NOT NULL,
+  `mod` int(11) NOT NULL,
+  `serie` int(11) NOT NULL,
+  `nNF` bigint(20) NOT NULL,
+  `emitente_id` int(11) NOT NULL,
+  `emitente_endereco_id` int(11) NOT NULL,
+  `destinatario_id` int(11) NOT NULL,
+  `destinatario_endereco_id` int(11) NOT NULL,
+  `retirada_endereco_id` int(11) DEFAULT NULL,
+  `entrega_endereco_id` int(11) DEFAULT NULL,
+  `cNF` bigint(20) NOT NULL,
+  `UF` varchar(2) NOT NULL,
+  `dhEmi` datetime NOT NULL,
+  `dhSaiEnt` datetime NOT NULL,
+  `natOp` varchar(60) NOT NULL,
+  `tpNF` int(11) NOT NULL,
+  `idDest` int(11) NOT NULL,
+  `cMunFG` int(11) NOT NULL,
+  `tpImp` int(11) NOT NULL,
+  `tpEmis` int(11) NOT NULL,
+  `chave` varchar(44) NOT NULL,
+  `cDV` int(11) NOT NULL,
+  `tpAmb` int(11) NOT NULL,
+  `finNFe` int(11) NOT NULL,
+  `indFinal` int(11) NOT NULL,
+  `indPres` int(11) NOT NULL,
+  `procEmi` int(11) NOT NULL,
+  `infCpl` varchar(100) NOT NULL,
+  `modFrete` int(11) NOT NULL DEFAULT '0',
+  `transportadora_id` int(11) DEFAULT NULL,
+  `xml` longblob
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `emissor_documentos_itens`
+--
+
+CREATE TABLE `emissor_documentos_itens` (
+  `id` int(11) NOT NULL,
+  `emissor_documentos_id` int(11) NOT NULL,
+  `emissor_produtos_servicos_id` int(11) NOT NULL,
+  `uCom` varchar(6) NOT NULL,
+  `qCom` decimal(19,4) NOT NULL,
+  `vUnCom` decimal(31,10) NOT NULL,
+  `uTrib` varchar(6) NOT NULL,
+  `qTrib` decimal(19,4) NOT NULL,
+  `vUnTrib` decimal(31,10) NOT NULL,
+  `vProd` decimal(17,2) NOT NULL,
+  `vFrete` decimal(17,2) NOT NULL,
+  `vSeg` decimal(17,2) NOT NULL,
+  `vDesc` decimal(17,2) NOT NULL,
+  `vOutro` decimal(17,2) NOT NULL,
+  `indTot` tinyint(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `emissor_documentos_refctes`
+--
+
+CREATE TABLE `emissor_documentos_refctes` (
+  `id` int(11) NOT NULL,
+  `emissor_documentos_id` int(11) NOT NULL,
+  `chave` varchar(44) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `emissor_documentos_refnfes`
+--
+
+CREATE TABLE `emissor_documentos_refnfes` (
+  `id` int(11) NOT NULL,
+  `emissor_documentos_id` int(11) NOT NULL,
+  `chave` varchar(44) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `emissor_documentos_volumes`
+--
+
+CREATE TABLE `emissor_documentos_volumes` (
+  `id` int(11) NOT NULL,
+  `emissor_documentos_id` int(11) NOT NULL,
+  `qVol` int(11) NOT NULL,
+  `esp` varchar(100) NOT NULL,
+  `marca` varchar(100) NOT NULL,
+  `nVol` varchar(100) NOT NULL,
+  `pesoL` double(20,3) NOT NULL,
+  `pesoB` double(20,3) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `emissor_impostos_cofins`
+--
+
+CREATE TABLE `emissor_impostos_cofins` (
+  `id` int(11) NOT NULL,
+  `emitente_id` int(11) NOT NULL,
+  `descricao` varchar(100) NOT NULL,
+  `tipo_calculo` char(1) DEFAULT NULL,
+  `CST` varchar(2) DEFAULT NULL,
+  `vBC` double(15,2) DEFAULT NULL,
+  `pCOFINS` double(7,4) DEFAULT NULL,
+  `vCOFINS` double(15,2) DEFAULT NULL,
+  `qBCProd` double(16,4) DEFAULT NULL,
+  `vAliqProd` double(15,4) DEFAULT NULL,
+  `ST_tipo_calculo` char(1) DEFAULT NULL,
+  `ST_vBC` double(15,2) DEFAULT NULL,
+  `ST_pCOFINS` double(7,4) DEFAULT NULL,
+  `ST_vCOFINS` double(15,2) DEFAULT NULL,
+  `ST_vBCProd` double(16,4) DEFAULT NULL,
+  `ST_vAliqProd` double(15,4) DEFAULT NULL,
+  `created` datetime NOT NULL,
+  `modified` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `emissor_impostos_icms`
+--
+
+CREATE TABLE `emissor_impostos_icms` (
+  `id` int(11) NOT NULL,
+  `emitente_id` int(11) NOT NULL,
+  `descricao` varchar(100) NOT NULL,
+  `orig` varchar(1) NOT NULL,
+  `CST` varchar(3) NOT NULL,
+  `modBC` varchar(1) DEFAULT NULL,
+  `pRedBC` double(10,4) DEFAULT NULL,
+  `vBC` double(15,2) DEFAULT NULL,
+  `pICMS` double(10,4) DEFAULT NULL,
+  `vICMS` double(15,2) DEFAULT NULL,
+  `modBCST` varchar(1) DEFAULT NULL,
+  `pMVAST` double(5,2) DEFAULT NULL,
+  `pRedBCST` double(10,4) DEFAULT NULL,
+  `vBCST` double(15,2) DEFAULT NULL,
+  `pICMSST` double(10,4) DEFAULT NULL,
+  `vICMSST` double(15,2) DEFAULT NULL,
+  `vBCSTRet` double(15,2) DEFAULT NULL,
+  `vICMSSTRet` double(15,2) DEFAULT NULL,
+  `vBCSTDest` double(15,2) DEFAULT NULL,
+  `vICMSSTDest` double(15,2) DEFAULT NULL,
+  `vDesICMS` double(15,2) DEFAULT NULL,
+  `motDesICMS` varchar(1) DEFAULT NULL,
+  `vDesICMSST` double(20,2) DEFAULT NULL,
+  `motDesICMSST` int(11) DEFAULT NULL,
+  `pBCOp` double(5,2) DEFAULT NULL,
+  `UFST` varchar(2) DEFAULT NULL,
+  `pCredSN` double(10,4) DEFAULT NULL,
+  `vCredICMSSN` double(15,2) DEFAULT NULL,
+  `vICMSOp` double(20,2) DEFAULT NULL,
+  `pDif` double(20,4) DEFAULT NULL,
+  `vICMSDif` double(20,2) DEFAULT NULL,
+  `vBCICMSST_retido_ant` double(20,2) DEFAULT NULL,
+  `vICMSST_retido_ant` double(20,2) DEFAULT NULL,
+  `created` datetime DEFAULT NULL,
+  `modified` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `emissor_impostos_ii`
+--
+
+CREATE TABLE `emissor_impostos_ii` (
+  `id` int(11) NOT NULL,
+  `emitente_id` int(11) NOT NULL,
+  `descricao` varchar(100) NOT NULL,
+  `vBC` double(15,2) DEFAULT NULL,
+  `vDespAdu` double(15,2) DEFAULT NULL,
+  `vII` double(15,2) DEFAULT NULL,
+  `vIOF` double(15,2) DEFAULT NULL,
+  `created` datetime NOT NULL,
+  `modified` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `emissor_impostos_ipi`
+--
+
+CREATE TABLE `emissor_impostos_ipi` (
+  `id` int(11) NOT NULL,
+  `emitente_id` int(11) NOT NULL,
+  `descricao` varchar(100) NOT NULL,
+  `clEnq` varchar(5) DEFAULT NULL,
+  `CNPJProd` varchar(20) DEFAULT NULL,
+  `cSelo` varchar(60) DEFAULT NULL,
+  `qSelo` int(11) DEFAULT NULL,
+  `cEnq` varchar(3) DEFAULT NULL,
+  `tipo_calculo` char(1) DEFAULT NULL,
+  `CST` varchar(2) DEFAULT NULL,
+  `vBC` double(15,2) DEFAULT NULL,
+  `pIPI` double(7,4) DEFAULT NULL,
+  `vIPI` double(15,2) DEFAULT NULL,
+  `qUnid` double(15,4) DEFAULT NULL,
+  `vUnid` double(15,4) DEFAULT NULL,
+  `created` datetime NOT NULL,
+  `modified` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `emissor_impostos_pis`
+--
+
+CREATE TABLE `emissor_impostos_pis` (
+  `id` int(11) NOT NULL,
+  `emitente_id` int(11) NOT NULL,
+  `descricao` varchar(100) NOT NULL,
+  `CST` varchar(2) DEFAULT NULL,
+  `tipo_calculo` char(1) DEFAULT NULL,
+  `vBC` double(15,2) DEFAULT NULL,
+  `pPIS` double(7,4) DEFAULT NULL,
+  `vPIS` double(15,2) DEFAULT NULL,
+  `qBCProd` double(16,4) DEFAULT NULL,
+  `vAliqProd` double(15,4) DEFAULT NULL,
+  `ST_tipo_calculo` char(1) DEFAULT NULL,
+  `ST_vBC` double(15,2) DEFAULT NULL,
+  `ST_pPIS` double(7,4) DEFAULT NULL,
+  `ST_vPIS` double(15,2) DEFAULT NULL,
+  `ST_qBCProd` double(16,4) DEFAULT NULL,
+  `ST_vAliqProd` double(15,4) DEFAULT NULL,
+  `created` datetime DEFAULT NULL,
+  `modified` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `emissor_produdos_servicos`
+--
+
+CREATE TABLE `emissor_produdos_servicos` (
+  `id` int(11) NOT NULL,
+  `emitente_id` int(11) NOT NULL,
+  `cProd` varchar(60) NOT NULL,
+  `cEAN` varchar(14) NOT NULL,
+  `xProd` varchar(120) NOT NULL,
+  `NCM` varchar(8) NOT NULL,
+  `CEST` varchar(7) NOT NULL,
+  `cBenef` varchar(10) NOT NULL,
+  `EXTIPI` varchar(3) NOT NULL,
+  `uCOM` varchar(6) NOT NULL,
+  `uTrib` varchar(6) NOT NULL,
+  `emissor_impostos_cofins_id` int(11) DEFAULT NULL,
+  `emissor_impostos_icms_id` int(11) DEFAULT NULL,
+  `emissor_impostos_ii_id` int(11) DEFAULT NULL,
+  `emissor_impostos_ipi_id` int(11) DEFAULT NULL,
+  `emissor_impostos_pis_id` int(11) DEFAULT NULL,
+  `created` datetime NOT NULL,
+  `modified` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -7707,6 +7985,27 @@ INSERT INTO `emissor_tipos_generos` (`id`, `genero`, `descricao`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Estrutura para tabela `emissor_tipos_identificadores_destinatarios`
+--
+
+CREATE TABLE `emissor_tipos_identificadores_destinatarios` (
+  `id` int(11) NOT NULL,
+  `indIEDest` int(11) NOT NULL,
+  `descricao` varchar(80) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Despejando dados para a tabela `emissor_tipos_identificadores_destinatarios`
+--
+
+INSERT INTO `emissor_tipos_identificadores_destinatarios` (`id`, `indIEDest`, `descricao`) VALUES
+(1, 1, 'Contribuinte ICMS (informar a tag IE do destinatário)'),
+(2, 2, 'Contribuinte isento de Inscrição no cadastro de Contribuintes do ICMS - não info'),
+(3, 9, 'Não Contribuinte, que pode ou não possuir Inscrição Estadual no Cadastro de Cont');
+
+-- --------------------------------------------------------
+
+--
 -- Estrutura para tabela `emissor_tipos_identificadores_destinos_operacoes`
 --
 
@@ -7753,6 +8052,32 @@ INSERT INTO `emissor_tipos_impostos_icms_csts` (`id`, `CST`, `descricao`) VALUES
 (9, '60', 'ICMS cobrado anteriormente por substituição tributária'),
 (10, '70', 'Com redução da BC e cobrança do ICMS por substituição tributária'),
 (11, '90', 'Outras');
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `emissor_tipos_impostos_icms_origem`
+--
+
+CREATE TABLE `emissor_tipos_impostos_icms_origem` (
+  `id` int(11) NOT NULL,
+  `orig` int(1) NOT NULL,
+  `descricao` varchar(80) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Despejando dados para a tabela `emissor_tipos_impostos_icms_origem`
+--
+
+INSERT INTO `emissor_tipos_impostos_icms_origem` (`id`, `orig`, `descricao`) VALUES
+(1, 0, '0 - Nacional, exceto as indicadas nos códigos 3 a 5'),
+(2, 1, '1 - Estrangeira - Importação direta, exceto a indicada no código 6'),
+(3, 2, '2 - Estrangeira - Adquirida no mercado interno, exceto a indicada no código 7'),
+(4, 3, '3 - Nacional, mercadoria ou bem com Conteúdo de Importação superior a 40%'),
+(5, 4, '4 - Nacional, cuja produção tenha sido feita em conformidade com os processos pr'),
+(6, 5, '5 - Nacional, mercadoria ou bem com Conteúdo de Importação inferior ou igual a 4'),
+(7, 6, '6 - Estrangeira - Importação direta, sem similar nacional, constante em lista de'),
+(8, 7, '7 - Estrangeira - Adquirida no mercado interno, sem similar nacional, constante ');
 
 -- --------------------------------------------------------
 
@@ -7826,6 +8151,30 @@ CREATE TABLE `emissor_tipos_modelos` (
 
 INSERT INTO `emissor_tipos_modelos` (`id`, `mod`, `descricao`) VALUES
 (1, '55', 'NF-e');
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `emissor_tipos_modos_fretes`
+--
+
+CREATE TABLE `emissor_tipos_modos_fretes` (
+  `id` int(11) NOT NULL,
+  `modFrete` int(1) NOT NULL,
+  `descricao` varchar(80) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Despejando dados para a tabela `emissor_tipos_modos_fretes`
+--
+
+INSERT INTO `emissor_tipos_modos_fretes` (`id`, `modFrete`, `descricao`) VALUES
+(1, 0, 'Contratação do Frete por conta do Remetente (CIF)'),
+(2, 1, 'Contratação do Frete por conta do Destinatário (FOB)'),
+(3, 2, 'Contratação do Frete por conta de Terceiros'),
+(4, 3, 'Transporte Próprio por conta do Remetente'),
+(5, 4, 'Transporte Próprio por conta do Destinatário'),
+(6, 9, 'Sem Ocorrência de Transporte');
 
 -- --------------------------------------------------------
 
@@ -17986,6 +18335,727 @@ INSERT INTO `emissor_tipos_regimes_tributarios` (`id`, `CRT`, `descricao`) VALUE
 -- --------------------------------------------------------
 
 --
+-- Estrutura para tabela `emissor_tipos_ricms`
+--
+
+CREATE TABLE `emissor_tipos_ricms` (
+  `id` int(11) NOT NULL,
+  `UF_origem` varchar(2) NOT NULL,
+  `UF_destino` varchar(2) NOT NULL,
+  `Aliquota` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Despejando dados para a tabela `emissor_tipos_ricms`
+--
+
+INSERT INTO `emissor_tipos_ricms` (`id`, `UF_origem`, `UF_destino`, `Aliquota`) VALUES
+(1, 'AC', 'RO', 12),
+(2, 'AM', 'RO', 12),
+(3, 'RR', 'RO', 12),
+(4, 'PA', 'RO', 12),
+(5, 'AP', 'RO', 12),
+(6, 'TO', 'RO', 12),
+(7, 'MA', 'RO', 12),
+(8, 'PI', 'RO', 12),
+(9, 'CE', 'RO', 12),
+(10, 'RN', 'RO', 12),
+(11, 'PB', 'RO', 12),
+(12, 'PE', 'RO', 12),
+(13, 'AL', 'RO', 12),
+(14, 'SE', 'RO', 12),
+(15, 'BA', 'RO', 12),
+(16, 'MG', 'RO', 7),
+(17, 'ES', 'RO', 12),
+(18, 'RJ', 'RO', 7),
+(19, 'SP', 'RO', 7),
+(20, 'PR', 'RO', 7),
+(21, 'SC', 'RO', 7),
+(22, 'RS', 'RO', 7),
+(23, 'MS', 'RO', 12),
+(24, 'MT', 'RO', 12),
+(25, 'GO', 'RO', 12),
+(26, 'DF', 'RO', 12),
+(27, 'RO', 'AC', 12),
+(28, 'AM', 'AC', 12),
+(29, 'RR', 'AC', 12),
+(30, 'PA', 'AC', 12),
+(31, 'AP', 'AC', 12),
+(32, 'TO', 'AC', 12),
+(33, 'MA', 'AC', 12),
+(34, 'PI', 'AC', 12),
+(35, 'CE', 'AC', 12),
+(36, 'RN', 'AC', 12),
+(37, 'PB', 'AC', 12),
+(38, 'PE', 'AC', 12),
+(39, 'AL', 'AC', 12),
+(40, 'SE', 'AC', 12),
+(41, 'BA', 'AC', 12),
+(42, 'MG', 'AC', 7),
+(43, 'ES', 'AC', 12),
+(44, 'RJ', 'AC', 7),
+(45, 'SP', 'AC', 7),
+(46, 'PR', 'AC', 7),
+(47, 'SC', 'AC', 7),
+(48, 'RS', 'AC', 7),
+(49, 'MS', 'AC', 12),
+(50, 'MT', 'AC', 12),
+(51, 'GO', 'AC', 12),
+(52, 'DF', 'AC', 12),
+(53, 'RO', 'AM', 12),
+(54, 'AC', 'AM', 12),
+(55, 'RR', 'AM', 12),
+(56, 'PA', 'AM', 12),
+(57, 'AP', 'AM', 12),
+(58, 'TO', 'AM', 12),
+(59, 'MA', 'AM', 12),
+(60, 'PI', 'AM', 12),
+(61, 'CE', 'AM', 12),
+(62, 'RN', 'AM', 12),
+(63, 'PB', 'AM', 12),
+(64, 'PE', 'AM', 12),
+(65, 'AL', 'AM', 12),
+(66, 'SE', 'AM', 12),
+(67, 'BA', 'AM', 12),
+(68, 'MG', 'AM', 7),
+(69, 'ES', 'AM', 12),
+(70, 'RJ', 'AM', 7),
+(71, 'SP', 'AM', 7),
+(72, 'PR', 'AM', 7),
+(73, 'SC', 'AM', 7),
+(74, 'RS', 'AM', 7),
+(75, 'MS', 'AM', 12),
+(76, 'MT', 'AM', 12),
+(77, 'GO', 'AM', 12),
+(78, 'DF', 'AM', 12),
+(79, 'RO', 'RR', 12),
+(80, 'AC', 'RR', 12),
+(81, 'AM', 'RR', 12),
+(82, 'PA', 'RR', 12),
+(83, 'AP', 'RR', 12),
+(84, 'TO', 'RR', 12),
+(85, 'MA', 'RR', 12),
+(86, 'PI', 'RR', 12),
+(87, 'CE', 'RR', 12),
+(88, 'RN', 'RR', 12),
+(89, 'PB', 'RR', 12),
+(90, 'PE', 'RR', 12),
+(91, 'AL', 'RR', 12),
+(92, 'SE', 'RR', 12),
+(93, 'BA', 'RR', 12),
+(94, 'MG', 'RR', 7),
+(95, 'ES', 'RR', 12),
+(96, 'RJ', 'RR', 7),
+(97, 'SP', 'RR', 7),
+(98, 'PR', 'RR', 7),
+(99, 'SC', 'RR', 7),
+(100, 'RS', 'RR', 7),
+(101, 'MS', 'RR', 12),
+(102, 'MT', 'RR', 12),
+(103, 'GO', 'RR', 12),
+(104, 'DF', 'RR', 12),
+(105, 'RO', 'PA', 12),
+(106, 'AC', 'PA', 12),
+(107, 'AM', 'PA', 12),
+(108, 'RR', 'PA', 12),
+(109, 'AP', 'PA', 12),
+(110, 'TO', 'PA', 12),
+(111, 'MA', 'PA', 12),
+(112, 'PI', 'PA', 12),
+(113, 'CE', 'PA', 12),
+(114, 'RN', 'PA', 12),
+(115, 'PB', 'PA', 12),
+(116, 'PE', 'PA', 12),
+(117, 'AL', 'PA', 12),
+(118, 'SE', 'PA', 12),
+(119, 'BA', 'PA', 12),
+(120, 'MG', 'PA', 7),
+(121, 'ES', 'PA', 12),
+(122, 'RJ', 'PA', 7),
+(123, 'SP', 'PA', 7),
+(124, 'PR', 'PA', 7),
+(125, 'SC', 'PA', 7),
+(126, 'RS', 'PA', 7),
+(127, 'MS', 'PA', 12),
+(128, 'MT', 'PA', 12),
+(129, 'GO', 'PA', 12),
+(130, 'DF', 'PA', 12),
+(131, 'RO', 'AP', 12),
+(132, 'AC', 'AP', 12),
+(133, 'AM', 'AP', 12),
+(134, 'RR', 'AP', 12),
+(135, 'PA', 'AP', 12),
+(136, 'TO', 'AP', 12),
+(137, 'MA', 'AP', 12),
+(138, 'PI', 'AP', 12),
+(139, 'CE', 'AP', 12),
+(140, 'RN', 'AP', 12),
+(141, 'PB', 'AP', 12),
+(142, 'PE', 'AP', 12),
+(143, 'AL', 'AP', 12),
+(144, 'SE', 'AP', 12),
+(145, 'BA', 'AP', 12),
+(146, 'MG', 'AP', 7),
+(147, 'ES', 'AP', 12),
+(148, 'RJ', 'AP', 7),
+(149, 'SP', 'AP', 7),
+(150, 'PR', 'AP', 7),
+(151, 'SC', 'AP', 7),
+(152, 'RS', 'AP', 7),
+(153, 'MS', 'AP', 12),
+(154, 'MT', 'AP', 12),
+(155, 'GO', 'AP', 12),
+(156, 'DF', 'AP', 12),
+(157, 'RO', 'TO', 12),
+(158, 'AC', 'TO', 12),
+(159, 'AM', 'TO', 12),
+(160, 'RR', 'TO', 12),
+(161, 'PA', 'TO', 12),
+(162, 'AP', 'TO', 12),
+(163, 'MA', 'TO', 12),
+(164, 'PI', 'TO', 12),
+(165, 'CE', 'TO', 12),
+(166, 'RN', 'TO', 12),
+(167, 'PB', 'TO', 12),
+(168, 'PE', 'TO', 12),
+(169, 'AL', 'TO', 12),
+(170, 'SE', 'TO', 12),
+(171, 'BA', 'TO', 12),
+(172, 'MG', 'TO', 7),
+(173, 'ES', 'TO', 12),
+(174, 'RJ', 'TO', 7),
+(175, 'SP', 'TO', 7),
+(176, 'PR', 'TO', 7),
+(177, 'SC', 'TO', 7),
+(178, 'RS', 'TO', 7),
+(179, 'MS', 'TO', 12),
+(180, 'MT', 'TO', 12),
+(181, 'GO', 'TO', 12),
+(182, 'DF', 'TO', 12),
+(183, 'RO', 'MA', 12),
+(184, 'AC', 'MA', 12),
+(185, 'AM', 'MA', 12),
+(186, 'RR', 'MA', 12),
+(187, 'PA', 'MA', 12),
+(188, 'AP', 'MA', 12),
+(189, 'TO', 'MA', 12),
+(190, 'PI', 'MA', 12),
+(191, 'CE', 'MA', 12),
+(192, 'RN', 'MA', 12),
+(193, 'PB', 'MA', 12),
+(194, 'PE', 'MA', 12),
+(195, 'AL', 'MA', 12),
+(196, 'SE', 'MA', 12),
+(197, 'BA', 'MA', 12),
+(198, 'MG', 'MA', 7),
+(199, 'ES', 'MA', 12),
+(200, 'RJ', 'MA', 7),
+(201, 'SP', 'MA', 7),
+(202, 'PR', 'MA', 7),
+(203, 'SC', 'MA', 7),
+(204, 'RS', 'MA', 7),
+(205, 'MS', 'MA', 12),
+(206, 'MT', 'MA', 12),
+(207, 'GO', 'MA', 12),
+(208, 'DF', 'MA', 12),
+(209, 'RO', 'PI', 12),
+(210, 'AC', 'PI', 12),
+(211, 'AM', 'PI', 12),
+(212, 'RR', 'PI', 12),
+(213, 'PA', 'PI', 12),
+(214, 'AP', 'PI', 12),
+(215, 'TO', 'PI', 12),
+(216, 'MA', 'PI', 12),
+(217, 'CE', 'PI', 12),
+(218, 'RN', 'PI', 12),
+(219, 'PB', 'PI', 12),
+(220, 'PE', 'PI', 12),
+(221, 'AL', 'PI', 12),
+(222, 'SE', 'PI', 12),
+(223, 'BA', 'PI', 12),
+(224, 'MG', 'PI', 7),
+(225, 'ES', 'PI', 12),
+(226, 'RJ', 'PI', 7),
+(227, 'SP', 'PI', 7),
+(228, 'PR', 'PI', 7),
+(229, 'SC', 'PI', 7),
+(230, 'RS', 'PI', 7),
+(231, 'MS', 'PI', 12),
+(232, 'MT', 'PI', 12),
+(233, 'GO', 'PI', 12),
+(234, 'DF', 'PI', 12),
+(235, 'RO', 'CE', 12),
+(236, 'AC', 'CE', 12),
+(237, 'AM', 'CE', 12),
+(238, 'RR', 'CE', 12),
+(239, 'PA', 'CE', 12),
+(240, 'AP', 'CE', 12),
+(241, 'TO', 'CE', 12),
+(242, 'MA', 'CE', 12),
+(243, 'PI', 'CE', 12),
+(244, 'RN', 'CE', 12),
+(245, 'PB', 'CE', 12),
+(246, 'PE', 'CE', 12),
+(247, 'AL', 'CE', 12),
+(248, 'SE', 'CE', 12),
+(249, 'BA', 'CE', 12),
+(250, 'MG', 'CE', 7),
+(251, 'ES', 'CE', 12),
+(252, 'RJ', 'CE', 7),
+(253, 'SP', 'CE', 7),
+(254, 'PR', 'CE', 7),
+(255, 'SC', 'CE', 7),
+(256, 'RS', 'CE', 7),
+(257, 'MS', 'CE', 12),
+(258, 'MT', 'CE', 12),
+(259, 'GO', 'CE', 12),
+(260, 'DF', 'CE', 12),
+(261, 'RO', 'RN', 12),
+(262, 'AC', 'RN', 12),
+(263, 'AM', 'RN', 12),
+(264, 'RR', 'RN', 12),
+(265, 'PA', 'RN', 12),
+(266, 'AP', 'RN', 12),
+(267, 'TO', 'RN', 12),
+(268, 'MA', 'RN', 12),
+(269, 'PI', 'RN', 12),
+(270, 'CE', 'RN', 12),
+(271, 'PB', 'RN', 12),
+(272, 'PE', 'RN', 12),
+(273, 'AL', 'RN', 12),
+(274, 'SE', 'RN', 12),
+(275, 'BA', 'RN', 12),
+(276, 'MG', 'RN', 7),
+(277, 'ES', 'RN', 12),
+(278, 'RJ', 'RN', 7),
+(279, 'SP', 'RN', 7),
+(280, 'PR', 'RN', 7),
+(281, 'SC', 'RN', 7),
+(282, 'RS', 'RN', 7),
+(283, 'MS', 'RN', 12),
+(284, 'MT', 'RN', 12),
+(285, 'GO', 'RN', 12),
+(286, 'DF', 'RN', 12),
+(287, 'RO', 'PB', 12),
+(288, 'AC', 'PB', 12),
+(289, 'AM', 'PB', 12),
+(290, 'RR', 'PB', 12),
+(291, 'PA', 'PB', 12),
+(292, 'AP', 'PB', 12),
+(293, 'TO', 'PB', 12),
+(294, 'MA', 'PB', 12),
+(295, 'PI', 'PB', 12),
+(296, 'CE', 'PB', 12),
+(297, 'RN', 'PB', 12),
+(298, 'PE', 'PB', 12),
+(299, 'AL', 'PB', 12),
+(300, 'SE', 'PB', 12),
+(301, 'BA', 'PB', 12),
+(302, 'MG', 'PB', 7),
+(303, 'ES', 'PB', 12),
+(304, 'RJ', 'PB', 7),
+(305, 'SP', 'PB', 7),
+(306, 'PR', 'PB', 7),
+(307, 'SC', 'PB', 7),
+(308, 'RS', 'PB', 7),
+(309, 'MS', 'PB', 12),
+(310, 'MT', 'PB', 12),
+(311, 'GO', 'PB', 12),
+(312, 'DF', 'PB', 12),
+(313, 'RO', 'PE', 12),
+(314, 'AC', 'PE', 12),
+(315, 'AM', 'PE', 12),
+(316, 'RR', 'PE', 12),
+(317, 'PA', 'PE', 12),
+(318, 'AP', 'PE', 12),
+(319, 'TO', 'PE', 12),
+(320, 'MA', 'PE', 12),
+(321, 'PI', 'PE', 12),
+(322, 'CE', 'PE', 12),
+(323, 'RN', 'PE', 12),
+(324, 'PB', 'PE', 12),
+(325, 'AL', 'PE', 12),
+(326, 'SE', 'PE', 12),
+(327, 'BA', 'PE', 12),
+(328, 'MG', 'PE', 7),
+(329, 'ES', 'PE', 12),
+(330, 'RJ', 'PE', 7),
+(331, 'SP', 'PE', 7),
+(332, 'PR', 'PE', 7),
+(333, 'SC', 'PE', 7),
+(334, 'RS', 'PE', 7),
+(335, 'MS', 'PE', 12),
+(336, 'MT', 'PE', 12),
+(337, 'GO', 'PE', 12),
+(338, 'DF', 'PE', 12),
+(339, 'RO', 'AL', 12),
+(340, 'AC', 'AL', 12),
+(341, 'AM', 'AL', 12),
+(342, 'RR', 'AL', 12),
+(343, 'PA', 'AL', 12),
+(344, 'AP', 'AL', 12),
+(345, 'TO', 'AL', 12),
+(346, 'MA', 'AL', 12),
+(347, 'PI', 'AL', 12),
+(348, 'CE', 'AL', 12),
+(349, 'RN', 'AL', 12),
+(350, 'PB', 'AL', 12),
+(351, 'PE', 'AL', 12),
+(352, 'SE', 'AL', 12),
+(353, 'BA', 'AL', 12),
+(354, 'MG', 'AL', 7),
+(355, 'ES', 'AL', 12),
+(356, 'RJ', 'AL', 7),
+(357, 'SP', 'AL', 7),
+(358, 'PR', 'AL', 7),
+(359, 'SC', 'AL', 7),
+(360, 'RS', 'AL', 7),
+(361, 'MS', 'AL', 12),
+(362, 'MT', 'AL', 12),
+(363, 'GO', 'AL', 12),
+(364, 'DF', 'AL', 12),
+(365, 'RO', 'SE', 12),
+(366, 'AC', 'SE', 12),
+(367, 'AM', 'SE', 12),
+(368, 'RR', 'SE', 12),
+(369, 'PA', 'SE', 12),
+(370, 'AP', 'SE', 12),
+(371, 'TO', 'SE', 12),
+(372, 'MA', 'SE', 12),
+(373, 'PI', 'SE', 12),
+(374, 'CE', 'SE', 12),
+(375, 'RN', 'SE', 12),
+(376, 'PB', 'SE', 12),
+(377, 'PE', 'SE', 12),
+(378, 'AL', 'SE', 12),
+(379, 'BA', 'SE', 12),
+(380, 'MG', 'SE', 7),
+(381, 'ES', 'SE', 12),
+(382, 'RJ', 'SE', 7),
+(383, 'SP', 'SE', 7),
+(384, 'PR', 'SE', 7),
+(385, 'SC', 'SE', 7),
+(386, 'RS', 'SE', 7),
+(387, 'MS', 'SE', 12),
+(388, 'MT', 'SE', 12),
+(389, 'GO', 'SE', 12),
+(390, 'DF', 'SE', 12),
+(391, 'RO', 'BA', 12),
+(392, 'AC', 'BA', 12),
+(393, 'AM', 'BA', 12),
+(394, 'RR', 'BA', 12),
+(395, 'PA', 'BA', 12),
+(396, 'AP', 'BA', 12),
+(397, 'TO', 'BA', 12),
+(398, 'MA', 'BA', 12),
+(399, 'PI', 'BA', 12),
+(400, 'CE', 'BA', 12),
+(401, 'RN', 'BA', 12),
+(402, 'PB', 'BA', 12),
+(403, 'PE', 'BA', 12),
+(404, 'AL', 'BA', 12),
+(405, 'SE', 'BA', 12),
+(406, 'MG', 'BA', 7),
+(407, 'ES', 'BA', 12),
+(408, 'RJ', 'BA', 7),
+(409, 'SP', 'BA', 7),
+(410, 'PR', 'BA', 7),
+(411, 'SC', 'BA', 7),
+(412, 'RS', 'BA', 7),
+(413, 'MS', 'BA', 12),
+(414, 'MT', 'BA', 12),
+(415, 'GO', 'BA', 12),
+(416, 'DF', 'BA', 12),
+(417, 'RO', 'MG', 12),
+(418, 'AC', 'MG', 12),
+(419, 'AM', 'MG', 12),
+(420, 'RR', 'MG', 12),
+(421, 'PA', 'MG', 12),
+(422, 'AP', 'MG', 12),
+(423, 'TO', 'MG', 12),
+(424, 'MA', 'MG', 12),
+(425, 'PI', 'MG', 12),
+(426, 'CE', 'MG', 12),
+(427, 'RN', 'MG', 12),
+(428, 'PB', 'MG', 12),
+(429, 'PE', 'MG', 12),
+(430, 'AL', 'MG', 12),
+(431, 'SE', 'MG', 12),
+(432, 'BA', 'MG', 12),
+(433, 'ES', 'MG', 12),
+(434, 'RJ', 'MG', 12),
+(435, 'SP', 'MG', 12),
+(436, 'PR', 'MG', 12),
+(437, 'SC', 'MG', 12),
+(438, 'RS', 'MG', 12),
+(439, 'MS', 'MG', 12),
+(440, 'MT', 'MG', 12),
+(441, 'GO', 'MG', 12),
+(442, 'DF', 'MG', 12),
+(443, 'RO', 'ES', 12),
+(444, 'AC', 'ES', 12),
+(445, 'AM', 'ES', 12),
+(446, 'RR', 'ES', 12),
+(447, 'PA', 'ES', 12),
+(448, 'AP', 'ES', 12),
+(449, 'TO', 'ES', 12),
+(450, 'MA', 'ES', 12),
+(451, 'PI', 'ES', 12),
+(452, 'CE', 'ES', 12),
+(453, 'RN', 'ES', 12),
+(454, 'PB', 'ES', 12),
+(455, 'PE', 'ES', 12),
+(456, 'AL', 'ES', 12),
+(457, 'SE', 'ES', 12),
+(458, 'BA', 'ES', 12),
+(459, 'MG', 'ES', 7),
+(460, 'RJ', 'ES', 7),
+(461, 'SP', 'ES', 7),
+(462, 'PR', 'ES', 7),
+(463, 'SC', 'ES', 7),
+(464, 'RS', 'ES', 7),
+(465, 'MS', 'ES', 12),
+(466, 'MT', 'ES', 12),
+(467, 'GO', 'ES', 12),
+(468, 'DF', 'ES', 12),
+(469, 'RO', 'RJ', 12),
+(470, 'AC', 'RJ', 12),
+(471, 'AM', 'RJ', 12),
+(472, 'RR', 'RJ', 12),
+(473, 'PA', 'RJ', 12),
+(474, 'AP', 'RJ', 12),
+(475, 'TO', 'RJ', 12),
+(476, 'MA', 'RJ', 12),
+(477, 'PI', 'RJ', 12),
+(478, 'CE', 'RJ', 12),
+(479, 'RN', 'RJ', 12),
+(480, 'PB', 'RJ', 12),
+(481, 'PE', 'RJ', 12),
+(482, 'AL', 'RJ', 12),
+(483, 'SE', 'RJ', 12),
+(484, 'BA', 'RJ', 12),
+(485, 'MG', 'RJ', 12),
+(486, 'ES', 'RJ', 12),
+(487, 'SP', 'RJ', 12),
+(488, 'PR', 'RJ', 12),
+(489, 'SC', 'RJ', 12),
+(490, 'RS', 'RJ', 12),
+(491, 'MS', 'RJ', 12),
+(492, 'MT', 'RJ', 12),
+(493, 'GO', 'RJ', 12),
+(494, 'DF', 'RJ', 12),
+(495, 'RO', 'SP', 12),
+(496, 'AC', 'SP', 12),
+(497, 'AM', 'SP', 12),
+(498, 'RR', 'SP', 12),
+(499, 'PA', 'SP', 12),
+(500, 'AP', 'SP', 12),
+(501, 'TO', 'SP', 12),
+(502, 'MA', 'SP', 12),
+(503, 'PI', 'SP', 12),
+(504, 'CE', 'SP', 12),
+(505, 'RN', 'SP', 12),
+(506, 'PB', 'SP', 12),
+(507, 'PE', 'SP', 12),
+(508, 'AL', 'SP', 12),
+(509, 'SE', 'SP', 12),
+(510, 'BA', 'SP', 12),
+(511, 'MG', 'SP', 12),
+(512, 'ES', 'SP', 12),
+(513, 'RJ', 'SP', 12),
+(514, 'PR', 'SP', 12),
+(515, 'SC', 'SP', 12),
+(516, 'RS', 'SP', 12),
+(517, 'MS', 'SP', 12),
+(518, 'MT', 'SP', 12),
+(519, 'GO', 'SP', 12),
+(520, 'DF', 'SP', 12),
+(521, 'RO', 'PR', 12),
+(522, 'AC', 'PR', 12),
+(523, 'AM', 'PR', 12),
+(524, 'RR', 'PR', 12),
+(525, 'PA', 'PR', 12),
+(526, 'AP', 'PR', 12),
+(527, 'TO', 'PR', 12),
+(528, 'MA', 'PR', 12),
+(529, 'PI', 'PR', 12),
+(530, 'CE', 'PR', 12),
+(531, 'RN', 'PR', 12),
+(532, 'PB', 'PR', 12),
+(533, 'PE', 'PR', 12),
+(534, 'AL', 'PR', 12),
+(535, 'SE', 'PR', 12),
+(536, 'BA', 'PR', 12),
+(537, 'MG', 'PR', 12),
+(538, 'ES', 'PR', 12),
+(539, 'RJ', 'PR', 12),
+(540, 'SP', 'PR', 12),
+(541, 'SC', 'PR', 12),
+(542, 'RS', 'PR', 12),
+(543, 'MS', 'PR', 12),
+(544, 'MT', 'PR', 12),
+(545, 'GO', 'PR', 12),
+(546, 'DF', 'PR', 12),
+(547, 'RO', 'SC', 12),
+(548, 'AC', 'SC', 12),
+(549, 'AM', 'SC', 12),
+(550, 'RR', 'SC', 12),
+(551, 'PA', 'SC', 12),
+(552, 'AP', 'SC', 12),
+(553, 'TO', 'SC', 12),
+(554, 'MA', 'SC', 12),
+(555, 'PI', 'SC', 12),
+(556, 'CE', 'SC', 12),
+(557, 'RN', 'SC', 12),
+(558, 'PB', 'SC', 12),
+(559, 'PE', 'SC', 12),
+(560, 'AL', 'SC', 12),
+(561, 'SE', 'SC', 12),
+(562, 'BA', 'SC', 12),
+(563, 'MG', 'SC', 12),
+(564, 'ES', 'SC', 12),
+(565, 'RJ', 'SC', 12),
+(566, 'SP', 'SC', 12),
+(567, 'PR', 'SC', 12),
+(568, 'RS', 'SC', 12),
+(569, 'MS', 'SC', 12),
+(570, 'MT', 'SC', 12),
+(571, 'GO', 'SC', 12),
+(572, 'DF', 'SC', 12),
+(573, 'RO', 'RS', 12),
+(574, 'AC', 'RS', 12),
+(575, 'AM', 'RS', 12),
+(576, 'RR', 'RS', 12),
+(577, 'PA', 'RS', 12),
+(578, 'AP', 'RS', 12),
+(579, 'TO', 'RS', 12),
+(580, 'MA', 'RS', 12),
+(581, 'PI', 'RS', 12),
+(582, 'CE', 'RS', 12),
+(583, 'RN', 'RS', 12),
+(584, 'PB', 'RS', 12),
+(585, 'PE', 'RS', 12),
+(586, 'AL', 'RS', 12),
+(587, 'SE', 'RS', 12),
+(588, 'BA', 'RS', 12),
+(589, 'MG', 'RS', 12),
+(590, 'ES', 'RS', 12),
+(591, 'RJ', 'RS', 12),
+(592, 'SP', 'RS', 12),
+(593, 'PR', 'RS', 12),
+(594, 'SC', 'RS', 12),
+(595, 'MS', 'RS', 12),
+(596, 'MT', 'RS', 12),
+(597, 'GO', 'RS', 12),
+(598, 'DF', 'RS', 12),
+(599, 'RO', 'MS', 12),
+(600, 'AC', 'MS', 12),
+(601, 'AM', 'MS', 12),
+(602, 'RR', 'MS', 12),
+(603, 'PA', 'MS', 12),
+(604, 'AP', 'MS', 12),
+(605, 'TO', 'MS', 12),
+(606, 'MA', 'MS', 12),
+(607, 'PI', 'MS', 12),
+(608, 'CE', 'MS', 12),
+(609, 'RN', 'MS', 12),
+(610, 'PB', 'MS', 12),
+(611, 'PE', 'MS', 12),
+(612, 'AL', 'MS', 12),
+(613, 'SE', 'MS', 12),
+(614, 'BA', 'MS', 12),
+(615, 'MG', 'MS', 7),
+(616, 'ES', 'MS', 12),
+(617, 'RJ', 'MS', 7),
+(618, 'SP', 'MS', 7),
+(619, 'PR', 'MS', 7),
+(620, 'SC', 'MS', 7),
+(621, 'RS', 'MS', 7),
+(622, 'MT', 'MS', 12),
+(623, 'GO', 'MS', 12),
+(624, 'DF', 'MS', 12),
+(625, 'RO', 'MT', 12),
+(626, 'AC', 'MT', 12),
+(627, 'AM', 'MT', 12),
+(628, 'RR', 'MT', 12),
+(629, 'PA', 'MT', 12),
+(630, 'AP', 'MT', 12),
+(631, 'TO', 'MT', 12),
+(632, 'MA', 'MT', 12),
+(633, 'PI', 'MT', 12),
+(634, 'CE', 'MT', 12),
+(635, 'RN', 'MT', 12),
+(636, 'PB', 'MT', 12),
+(637, 'PE', 'MT', 12),
+(638, 'AL', 'MT', 12),
+(639, 'SE', 'MT', 12),
+(640, 'BA', 'MT', 12),
+(641, 'MG', 'MT', 7),
+(642, 'ES', 'MT', 12),
+(643, 'RJ', 'MT', 7),
+(644, 'SP', 'MT', 7),
+(645, 'PR', 'MT', 7),
+(646, 'SC', 'MT', 7),
+(647, 'RS', 'MT', 7),
+(648, 'MS', 'MT', 12),
+(649, 'GO', 'MT', 12),
+(650, 'DF', 'MT', 12),
+(651, 'RO', 'GO', 12),
+(652, 'AC', 'GO', 12),
+(653, 'AM', 'GO', 12),
+(654, 'RR', 'GO', 12),
+(655, 'PA', 'GO', 12),
+(656, 'AP', 'GO', 12),
+(657, 'TO', 'GO', 12),
+(658, 'MA', 'GO', 12),
+(659, 'PI', 'GO', 12),
+(660, 'CE', 'GO', 12),
+(661, 'RN', 'GO', 12),
+(662, 'PB', 'GO', 12),
+(663, 'PE', 'GO', 12),
+(664, 'AL', 'GO', 12),
+(665, 'SE', 'GO', 12),
+(666, 'BA', 'GO', 12),
+(667, 'MG', 'GO', 7),
+(668, 'ES', 'GO', 12),
+(669, 'RJ', 'GO', 7),
+(670, 'SP', 'GO', 7),
+(671, 'PR', 'GO', 7),
+(672, 'SC', 'GO', 7),
+(673, 'RS', 'GO', 7),
+(674, 'MS', 'GO', 12),
+(675, 'MT', 'GO', 12),
+(676, 'DF', 'GO', 12),
+(677, 'RO', 'DF', 12),
+(678, 'AC', 'DF', 12),
+(679, 'AM', 'DF', 12),
+(680, 'RR', 'DF', 12),
+(681, 'PA', 'DF', 12),
+(682, 'AP', 'DF', 12),
+(683, 'TO', 'DF', 12),
+(684, 'MA', 'DF', 12),
+(685, 'PI', 'DF', 12),
+(686, 'CE', 'DF', 12),
+(687, 'RN', 'DF', 12),
+(688, 'PB', 'DF', 12),
+(689, 'PE', 'DF', 12),
+(690, 'AL', 'DF', 12),
+(691, 'SE', 'DF', 12),
+(692, 'BA', 'DF', 12),
+(693, 'MG', 'DF', 7),
+(694, 'ES', 'DF', 12),
+(695, 'RJ', 'DF', 7),
+(696, 'SP', 'DF', 7),
+(697, 'PR', 'DF', 7),
+(698, 'SC', 'DF', 7),
+(699, 'RS', 'DF', 7),
+(700, 'MS', 'DF', 12),
+(701, 'MT', 'DF', 12),
+(702, 'GO', 'DF', 12);
+
+-- --------------------------------------------------------
+
+--
 -- Estrutura para tabela `emissor_tipos_veiculos`
 --
 
@@ -18022,280 +19092,6 @@ INSERT INTO `emissor_tipos_veiculos` (`id`, `tpVeic`, `descricao`) VALUES
 (20, '25', 'UTILITÁRIO'),
 (21, '26', 'MOTOR-CASA');
 
--- --------------------------------------------------------
-
---
--- Estrutura para tabela `pais`
---
-
-CREATE TABLE `pais` (
-  `id` int(11) NOT NULL,
-  `nome` varchar(60) DEFAULT NULL,
-  `nome_pt` varchar(60) DEFAULT NULL,
-  `sigla` varchar(2) DEFAULT NULL,
-  `bacen` int(5) DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Países e Nações';
-
---
--- Despejando dados para a tabela `pais`
---
-
-INSERT INTO `pais` (`id`, `nome`, `nome_pt`, `sigla`, `bacen`) VALUES
-(1, 'Brazil', 'Brasil', 'BR', 1058),
-(2, 'Afghanistan', 'Afeganistão', 'AF', 132),
-(3, 'Albania', 'Albânia, Republica da', 'AL', 175),
-(4, 'Algeria', 'Argélia', 'DZ', 590),
-(5, 'American Samoa', 'Samoa Americana', 'AS', 6912),
-(6, 'Andorra', 'Andorra', 'AD', 370),
-(7, 'Angola', 'Angola', 'AO', 400),
-(8, 'Anguilla', 'Anguilla', 'AI', 418),
-(9, 'Antarctica', 'Antártida', 'AQ', 3596),
-(10, 'Antigua and Barbuda', 'Antigua e Barbuda', 'AG', 434),
-(11, 'Argentina', 'Argentina', 'AR', 639),
-(12, 'Armenia', 'Armênia, Republica da', 'AM', 647),
-(13, 'Aruba', 'Aruba', 'AW', 655),
-(14, 'Australia', 'Austrália', 'AU', 698),
-(15, 'Austria', 'Áustria', 'AT', 728),
-(16, 'Azerbaijan', 'Azerbaijão, Republica do', 'AZ', 736),
-(17, 'Bahamas', 'Bahamas, Ilhas', 'BS', 779),
-(18, 'Bahrain', 'Bahrein, Ilhas', 'BH', 809),
-(19, 'Bangladesh', 'Bangladesh', 'BD', 817),
-(20, 'Barbados', 'Barbados', 'BB', 833),
-(21, 'Belarus', 'Belarus, Republica da', 'BY', 850),
-(22, 'Belgium', 'Bélgica', 'BE', 876),
-(23, 'Belize', 'Belize', 'BZ', 884),
-(24, 'Benin', 'Benin', 'BJ', 2291),
-(25, 'Bermuda', 'Bermudas', 'BM', 906),
-(26, 'Bhutan', 'Butão', 'BT', 1198),
-(27, 'Bolivia', 'Bolívia', 'BO', 973),
-(28, 'Bosnia and Herzegowina', 'Bósnia-herzegovina (Republica da)', 'BA', 981),
-(29, 'Botswana', 'Botsuana', 'BW', 1015),
-(30, 'Bouvet Island', 'Bouvet, Ilha', 'BV', 1023),
-(31, 'British Indian Ocean Territory', 'Território Britânico do Oceano Indico', 'IO', 7820),
-(32, 'Brunei Darussalam', 'Brunei', 'BN', 1082),
-(33, 'Bulgaria', 'Bulgária, Republica da', 'BG', 1112),
-(34, 'Burkina Faso', 'Burkina Faso', 'BF', 310),
-(35, 'Burundi', 'Burundi', 'BI', 1155),
-(36, 'Cambodia', 'Camboja', 'KH', 1414),
-(37, 'Cameroon', 'Camarões', 'CM', 1457),
-(38, 'Canada', 'Canada', 'CA', 1490),
-(39, 'Cape Verde', 'Cabo Verde, Republica de', 'CV', 1279),
-(40, 'Cayman Islands', 'Cayman, Ilhas', 'KY', 1376),
-(41, 'Central African Republic', 'Republica Centro-Africana', 'CF', 6408),
-(42, 'Chad', 'Chade', 'TD', 7889),
-(43, 'Chile', 'Chile', 'CL', 1589),
-(44, 'China', 'China, Republica Popular', 'CN', 1600),
-(45, 'Christmas Island', 'Christmas, Ilha (Navidad)', 'CX', 5118),
-(46, 'Cocos (Keeling) Islands', 'Cocos (Keeling), Ilhas', 'CC', 1651),
-(47, 'Colombia', 'Colômbia', 'CO', 1694),
-(48, 'Comoros', 'Comores, Ilhas', 'KM', 1732),
-(49, 'Congo', 'Congo', 'CG', 1775),
-(50, 'Congo, the Democratic Republic of the', 'Congo, Republica Democrática do', 'CD', 8885),
-(51, 'Cook Islands', 'Cook, Ilhas', 'CK', 1830),
-(52, 'Costa Rica', 'Costa Rica', 'CR', 1961),
-(53, 'Cote d`Ivoire', 'Costa do Marfim', 'CI', 1937),
-(54, 'Croatia (Hrvatska)', 'Croácia (Republica da)', 'HR', 1953),
-(55, 'Cuba', 'Cuba', 'CU', 1996),
-(56, 'Cyprus', 'Chipre', 'CY', 1635),
-(57, 'Czech Republic', 'Tcheca, Republica', 'CZ', 7919),
-(58, 'Denmark', 'Dinamarca', 'DK', 2321),
-(59, 'Djibouti', 'Djibuti', 'DJ', 7838),
-(60, 'Dominica', 'Dominica, Ilha', 'DM', 2356),
-(61, 'Dominican Republic', 'Republica Dominicana', 'DO', 6475),
-(62, 'East Timor', 'Timor Leste', 'TL', 7951),
-(63, 'Ecuador', 'Equador', 'EC', 2399),
-(64, 'Egypt', 'Egito', 'EG', 2402),
-(65, 'El Salvador', 'El Salvador', 'SV', 6874),
-(66, 'Equatorial Guinea', 'Guine-Equatorial', 'GQ', 3310),
-(67, 'Eritrea', 'Eritreia', 'ER', 2437),
-(68, 'Estonia', 'Estônia, Republica da', 'EE', 2518),
-(69, 'Ethiopia', 'Etiópia', 'ET', 2534),
-(70, 'Falkland Islands (Malvinas)', 'Falkland (Ilhas Malvinas)', 'FK', 2550),
-(71, 'Faroe Islands', 'Feroe, Ilhas', 'FO', 2593),
-(72, 'Fiji', 'Fiji', 'FJ', 8702),
-(73, 'Finland', 'Finlândia', 'FI', 2712),
-(74, 'France', 'Franca', 'FR', 2755),
-(76, 'French Guiana', 'Guiana francesa', 'GF', 3255),
-(77, 'French Polynesia', 'Polinésia Francesa', 'PF', 5991),
-(78, 'French Southern Territories', 'Terras Austrais e Antárticas Francesas', 'TF', 3607),
-(79, 'Gabon', 'Gabão', 'GA', 2810),
-(80, 'Gambia', 'Gambia', 'GM', 2852),
-(81, 'Georgia', 'Georgia, Republica da', 'GE', 2917),
-(82, 'Germany', 'Alemanha', 'DE', 230),
-(83, 'Ghana', 'Gana', 'GH', 2895),
-(84, 'Gibraltar', 'Gibraltar', 'GI', 2933),
-(85, 'Greece', 'Grécia', 'GR', 3018),
-(86, 'Greenland', 'Groenlândia', 'GL', 3050),
-(87, 'Grenada', 'Granada', 'GD', 2976),
-(88, 'Guadeloupe', 'Guadalupe', 'GP', 3093),
-(89, 'Guam', 'Guam', 'GU', 3131),
-(90, 'Guatemala', 'Guatemala', 'GT', 3174),
-(91, 'Guinea', 'Guine', 'GN', 3298),
-(92, 'Guinea-Bissau', 'Guine-Bissau', 'GW', 3344),
-(93, 'Guyana', 'Guiana', 'GY', 3379),
-(94, 'Haiti', 'Haiti', 'HT', 3417),
-(95, 'Heard and Mc Donald Islands', 'Ilha Heard e Ilhas McDonald', 'HM', 3603),
-(96, 'Holy See (Vatican City State)', 'Vaticano, Estado da Cidade do', 'VA', 8486),
-(97, 'Honduras', 'Honduras', 'HN', 3450),
-(98, 'Hong Kong', 'Hong Kong', 'HK', 3514),
-(99, 'Hungary', 'Hungria, Republica da', 'HU', 3557),
-(100, 'Iceland', 'Islândia', 'IS', 3794),
-(101, 'India', 'Índia', 'IN', 3611),
-(102, 'Indonesia', 'Indonésia', 'ID', 3654),
-(103, 'Iran (Islamic Republic of)', 'Ira, Republica Islâmica do', 'IR', 3727),
-(104, 'Iraq', 'Iraque', 'IQ', 3697),
-(105, 'Ireland', 'Irlanda', 'IE', 3751),
-(106, 'Israel', 'Israel', 'IL', 3832),
-(107, 'Italy', 'Itália', 'IT', 3867),
-(108, 'Jamaica', 'Jamaica', 'JM', 3913),
-(109, 'Japan', 'Japão', 'JP', 3999),
-(110, 'Jordan', 'Jordânia', 'JO', 4030),
-(111, 'Kazakhstan', 'Cazaquistão, Republica do', 'KZ', 1538),
-(112, 'Kenya', 'Quênia', 'KE', 6238),
-(113, 'Kiribati', 'Kiribati', 'KI', 4111),
-(114, 'Korea, Democratic People`s Republic of', 'Coreia, Republica Popular Democrática da', 'KP', 1872),
-(115, 'Korea, Republic of', 'Coreia, Republica da', 'KR', 1902),
-(116, 'Kuwait', 'Kuwait', 'KW', 1988),
-(117, 'Kyrgyzstan', 'Quirguiz, Republica', 'KG', 6254),
-(118, 'Lao People`s Democratic Republic', 'Laos, Republica Popular Democrática do', 'LA', 4200),
-(119, 'Latvia', 'Letônia, Republica da', 'LV', 4278),
-(120, 'Lebanon', 'Líbano', 'LB', 4316),
-(121, 'Lesotho', 'Lesoto', 'LS', 4260),
-(122, 'Liberia', 'Libéria', 'LR', 4340),
-(123, 'Libyan Arab Jamahiriya', 'Líbia', 'LY', 4383),
-(124, 'Liechtenstein', 'Liechtenstein', 'LI', 4405),
-(125, 'Lithuania', 'Lituânia, Republica da', 'LT', 4421),
-(126, 'Luxembourg', 'Luxemburgo', 'LU', 4456),
-(127, 'Macau', 'Macau', 'MO', 4472),
-(128, 'North Macedonia', 'Macedônia do Norte', 'MK', 4499),
-(129, 'Madagascar', 'Madagascar', 'MG', 4502),
-(130, 'Malawi', 'Malavi', 'MW', 4588),
-(131, 'Malaysia', 'Malásia', 'MY', 4553),
-(132, 'Maldives', 'Maldivas', 'MV', 4618),
-(133, 'Mali', 'Mali', 'ML', 4642),
-(134, 'Malta', 'Malta', 'MT', 4677),
-(135, 'Marshall Islands', 'Marshall, Ilhas', 'MH', 4766),
-(136, 'Martinique', 'Martinica', 'MQ', 4774),
-(137, 'Mauritania', 'Mauritânia', 'MR', 4880),
-(138, 'Mauritius', 'Mauricio', 'MU', 4855),
-(139, 'Mayotte', 'Mayotte (Ilhas Francesas)', 'YT', 4885),
-(140, 'Mexico', 'México', 'MX', 4936),
-(141, 'Micronesia, Federated States of', 'Micronesia', 'FM', 4995),
-(142, 'Moldova, Republic of', 'Moldávia, Republica da', 'MD', 4944),
-(143, 'Monaco', 'Mônaco', 'MC', 4952),
-(144, 'Mongolia', 'Mongólia', 'MN', 4979),
-(145, 'Montserrat', 'Montserrat, Ilhas', 'MS', 5010),
-(146, 'Morocco', 'Marrocos', 'MA', 4740),
-(147, 'Mozambique', 'Moçambique', 'MZ', 5053),
-(148, 'Myanmar', 'Mianmar (Birmânia)', 'MM', 930),
-(149, 'Namibia', 'Namíbia', 'NA', 5070),
-(150, 'Nauru', 'Nauru', 'NR', 5088),
-(151, 'Nepal', 'Nepal', 'NP', 5177),
-(152, 'Netherlands', 'Países Baixos (Holanda)', 'NL', 5738),
-(154, 'New Caledonia', 'Nova Caledonia', 'NC', 5428),
-(155, 'New Zealand', 'Nova Zelândia', 'NZ', 5487),
-(156, 'Nicaragua', 'Nicarágua', 'NI', 5215),
-(157, 'Niger', 'Níger', 'NE', 5258),
-(158, 'Nigeria', 'Nigéria', 'NG', 5282),
-(159, 'Niue', 'Niue, Ilha', 'NU', 5312),
-(160, 'Norfolk Island', 'Norfolk, Ilha', 'NF', 5355),
-(161, 'Northern Mariana Islands', 'Marianas do Norte', 'MP', 4723),
-(162, 'Norway', 'Noruega', 'NO', 5380),
-(163, 'Oman', 'Oma', 'OM', 5568),
-(164, 'Pakistan', 'Paquistão', 'PK', 5762),
-(165, 'Palau', 'Palau', 'PW', 5754),
-(166, 'Panama', 'Panamá', 'PA', 5800),
-(167, 'Papua New Guinea', 'Papua Nova Guine', 'PG', 5452),
-(168, 'Paraguay', 'Paraguai', 'PY', 5860),
-(169, 'Peru', 'Peru', 'PE', 5894),
-(170, 'Philippines', 'Filipinas', 'PH', 2674),
-(171, 'Pitcairn', 'Pitcairn, Ilha', 'PN', 5932),
-(172, 'Poland', 'Polônia, Republica da', 'PL', 6033),
-(173, 'Portugal', 'Portugal', 'PT', 6076),
-(174, 'Puerto Rico', 'Porto Rico', 'PR', 6114),
-(175, 'Qatar', 'Catar', 'QA', 1546),
-(176, 'Reunion', 'Reunião, Ilha', 'RE', 6602),
-(177, 'Romania', 'Romênia', 'RO', 6700),
-(178, 'Russian Federation', 'Rússia, Federação da', 'RU', 6769),
-(179, 'Rwanda', 'Ruanda', 'RW', 6750),
-(180, 'Saint Kitts and Nevis', 'São Cristovão e Neves, Ilhas', 'KN', 6955),
-(181, 'Saint LUCIA', 'Santa Lucia', 'LC', 7153),
-(182, 'Saint Vincent and the Grenadines', 'São Vicente e Granadinas', 'VC', 7056),
-(183, 'Samoa', 'Samoa', 'WS', 6904),
-(184, 'San Marino', 'San Marino', 'SM', 6971),
-(185, 'Sao Tome and Principe', 'São Tome e Príncipe, Ilhas', 'ST', 7200),
-(186, 'Saudi Arabia', 'Arábia Saudita', 'SA', 531),
-(187, 'Senegal', 'Senegal', 'SN', 7285),
-(188, 'Seychelles', 'Seychelles', 'SC', 7315),
-(189, 'Sierra Leone', 'Serra Leoa', 'SL', 7358),
-(190, 'Singapore', 'Cingapura', 'SG', 7412),
-(191, 'Slovakia (Slovak Republic)', 'Eslovaca, Republica', 'SK', 2470),
-(192, 'Slovenia', 'Eslovênia, Republica da', 'SI', 2461),
-(193, 'Solomon Islands', 'Salomão, Ilhas', 'SB', 6777),
-(194, 'Somalia', 'Somalia', 'SO', 7480),
-(195, 'South Africa', 'África do Sul', 'ZA', 7560),
-(196, 'South Georgia and the South Sandwich Islands', 'Ilhas Geórgia do Sul e Sandwich do Sul', 'GS', 2925),
-(197, 'Spain', 'Espanha', 'ES', 2453),
-(198, 'Sri Lanka', 'Sri Lanka', 'LK', 7501),
-(199, 'St. Helena', 'Santa Helena', 'SH', 7102),
-(200, 'St. Pierre and Miquelon', 'São Pedro e Miquelon', 'PM', 7005),
-(201, 'Sudan', 'Sudão', 'SD', 7595),
-(202, 'Suriname', 'Suriname', 'SR', 7706),
-(203, 'Svalbard and Jan Mayen Islands', 'Svalbard e Jan Mayen', 'SJ', 7552),
-(204, 'Swaziland', 'Eswatini', 'SZ', 7544),
-(205, 'Sweden', 'Suécia', 'SE', 7641),
-(206, 'Switzerland', 'Suíça', 'CH', 7676),
-(207, 'Syrian Arab Republic', 'Síria, Republica Árabe da', 'SY', 7447),
-(208, 'Taiwan, Province of China', 'Formosa (Taiwan)', 'TW', 1619),
-(209, 'Tajikistan', 'Tadjiquistao, Republica do', 'TJ', 7722),
-(210, 'Tanzania, United Republic of', 'Tanzânia, Republica Unida da', 'TZ', 7803),
-(211, 'Thailand', 'Tailândia', 'TH', 7765),
-(212, 'Togo', 'Togo', 'TG', 8001),
-(213, 'Tokelau', 'Toquelau, Ilhas', 'TK', 8052),
-(214, 'Tonga', 'Tonga', 'TO', 8109),
-(215, 'Trinidad and Tobago', 'Trinidad e Tobago', 'TT', 8150),
-(216, 'Tunisia', 'Tunísia', 'TN', 8206),
-(217, 'Turkey', 'Turquia', 'TR', 8273),
-(218, 'Turkmenistan', 'Turcomenistão, Republica do', 'TM', 8249),
-(219, 'Turks and Caicos Islands', 'Turcas e Caicos, Ilhas', 'TC', 8230),
-(220, 'Tuvalu', 'Tuvalu', 'TV', 8281),
-(221, 'Uganda', 'Uganda', 'UG', 8338),
-(222, 'Ukraine', 'Ucrânia', 'UA', 8311),
-(223, 'United Arab Emirates', 'Emirados Árabes Unidos', 'AE', 2445),
-(224, 'United Kingdom', 'Reino Unido', 'GB', 6289),
-(225, 'United States', 'Estados Unidos', 'US', 2496),
-(226, 'United States Minor Outlying Islands', 'Ilhas Menores Distantes dos Estados Unidos', 'UM', 18664),
-(227, 'Uruguay', 'Uruguai', 'UY', 8451),
-(228, 'Uzbekistan', 'Uzbequistão, Republica do', 'UZ', 8478),
-(229, 'Vanuatu', 'Vanuatu', 'VU', 5517),
-(230, 'Venezuela', 'Venezuela', 'VE', 8508),
-(231, 'Viet Nam', 'Vietnã', 'VN', 8583),
-(232, 'Virgin Islands (British)', 'Virgens, Ilhas (Britânicas)', 'VG', 8630),
-(233, 'Virgin Islands (U.S.)', 'Virgens, Ilhas (E.U.A.)', 'VI', 8664),
-(234, 'Wallis and Futuna Islands', 'Wallis e Futuna, Ilhas', 'WF', 8753),
-(235, 'Western Sahara', 'Saara Ocidental', 'EH', 6858),
-(236, 'Yemen', 'Iémen', 'YE', 3573),
-(237, 'Yugoslavia', 'Iugoslávia, República Fed. da', 'YU', 3883),
-(238, 'Zambia', 'Zâmbia', 'ZM', 8907),
-(239, 'Zimbabwe', 'Zimbabue', 'ZW', 6653),
-(240, 'Bailiwick of Guernsey', 'Guernsey, Ilha do Canal (Inclui Alderney e Sark)', 'GG', 1504),
-(241, 'Bailiwick of Jersey', 'Jersey, Ilha do Canal', 'JE', 1508),
-(243, 'Isle of Man', 'Man, Ilha de', 'IM', 3595),
-(246, 'Crna Gora (Montenegro)', 'Montenegro', 'ME', 4985),
-(247, 'SÉRVIA', 'Republika Srbija', 'RS', 7370),
-(248, 'Republic of South Sudan', 'Sudao do Sul', 'SS', 7600),
-(249, 'Zona del Canal de Panamá', 'Zona do Canal do Panamá', NULL, 8958),
-(252, 'Dawlat Filasṭīn', 'Palestina', 'PS', 5780),
-(253, 'Åland Islands', 'Aland, Ilhas', 'AX', 153),
-(255, 'Curaçao', 'Curaçao', 'CW', 200),
-(256, 'Saint Martin', 'São Martinho, Ilha de (Parte Holandesa)', 'SM', 6998),
-(258, 'Bonaire', 'Bonaire', 'AN', 990),
-(259, 'Antartica', 'Antartica', 'AQ', 420),
-(260, 'Heard Island and McDonald Islands', 'Ilha Herad e Ilhas Macdonald', 'AU', 3433),
-(261, 'Saint-Barthélemy', 'São Bartolomeu', 'FR', 6939),
-(262, 'Saint Martin', 'São Martinho, Ilha de (Parte Francesa)', 'SM', 6980),
-(263, 'Terres Australes et Antarctiques Françaises', 'Terras Austrais e Antárcticas Francesas', 'TF', 7811);
-
 --
 -- Índices de tabelas apagadas
 --
@@ -18315,8 +19111,8 @@ ALTER TABLE `emissor_cadastros_dados`
 --
 ALTER TABLE `emissor_cadastros_dados_emissores`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `emissor_cadastro_dado_id` (`emissor_cadastro_dado_id`),
-  ADD KEY `emissor_tipo_regime_tributario_id` (`emissor_tipo_regime_tributario_id`);
+  ADD UNIQUE KEY `emissor_cadastros_dados_id` (`emissor_cadastros_dados_id`) USING BTREE,
+  ADD KEY `emissor_tipos_regimes_tributarios_id` (`emissor_tipos_regimes_tributarios_id`);
 
 --
 -- Índices de tabela `emissor_cadastros_enderecos`
@@ -18325,16 +19121,113 @@ ALTER TABLE `emissor_cadastros_enderecos`
   ADD PRIMARY KEY (`id`),
   ADD KEY `cMun` (`cMun`),
   ADD KEY `cPais` (`cPais`),
-  ADD KEY `emissor_cadastro_dados_id` (`emissor_cadastro_dados_id`),
-  ADD KEY `tipo_endereco` (`tipo_endereco`);
+  ADD KEY `tipo_endereco` (`tipo_endereco`),
+  ADD KEY `emissor_cadastros_dados_id` (`emissor_cadastros_dados_id`);
 
 --
 -- Índices de tabela `emissor_cadastros_tipos`
 --
 ALTER TABLE `emissor_cadastros_tipos`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `emissor_cadastro_dado_id` (`emissor_cadastro_dado_id`),
-  ADD KEY `emissor_tipo_cadastro_id` (`emissor_tipo_cadastro_id`);
+  ADD KEY `emissor_cadastros_dados_id` (`emissor_cadastros_dados_id`),
+  ADD KEY `emissor_tipos_cadastros_id` (`emissor_tipos_cadastros_id`);
+
+--
+-- Índices de tabela `emissor_documentos`
+--
+ALTER TABLE `emissor_documentos`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `emitente_id` (`emitente_id`),
+  ADD KEY `emitente_endereco_id` (`emitente_endereco_id`),
+  ADD KEY `destinatario_id` (`destinatario_id`),
+  ADD KEY `destinatario_endereco_id` (`destinatario_endereco_id`),
+  ADD KEY `retirada_endereco_id` (`retirada_endereco_id`),
+  ADD KEY `entrega_endereco_id` (`entrega_endereco_id`),
+  ADD KEY `mod` (`mod`),
+  ADD KEY `serie` (`serie`),
+  ADD KEY `nNF` (`nNF`),
+  ADD KEY `cNF` (`cNF`),
+  ADD KEY `tpNF` (`tpNF`),
+  ADD KEY `tpEmis` (`tpEmis`),
+  ADD KEY `chave` (`chave`),
+  ADD KEY `tpAmb` (`tpAmb`),
+  ADD KEY `finNFe` (`finNFe`);
+
+--
+-- Índices de tabela `emissor_documentos_itens`
+--
+ALTER TABLE `emissor_documentos_itens`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `emissor_documentos_id` (`emissor_documentos_id`),
+  ADD KEY `emissor_produtos_servicos_id` (`emissor_produtos_servicos_id`);
+
+--
+-- Índices de tabela `emissor_documentos_refctes`
+--
+ALTER TABLE `emissor_documentos_refctes`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `emissor_documentos_id` (`emissor_documentos_id`);
+
+--
+-- Índices de tabela `emissor_documentos_refnfes`
+--
+ALTER TABLE `emissor_documentos_refnfes`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `emissor_documentos_id` (`emissor_documentos_id`);
+
+--
+-- Índices de tabela `emissor_documentos_volumes`
+--
+ALTER TABLE `emissor_documentos_volumes`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `emissor_documentos_id` (`emissor_documentos_id`);
+
+--
+-- Índices de tabela `emissor_impostos_cofins`
+--
+ALTER TABLE `emissor_impostos_cofins`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `emitente_id` (`emitente_id`);
+
+--
+-- Índices de tabela `emissor_impostos_icms`
+--
+ALTER TABLE `emissor_impostos_icms`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `emitente_id` (`emitente_id`);
+
+--
+-- Índices de tabela `emissor_impostos_ii`
+--
+ALTER TABLE `emissor_impostos_ii`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `emitente_id` (`emitente_id`);
+
+--
+-- Índices de tabela `emissor_impostos_ipi`
+--
+ALTER TABLE `emissor_impostos_ipi`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `emitente_id` (`emitente_id`);
+
+--
+-- Índices de tabela `emissor_impostos_pis`
+--
+ALTER TABLE `emissor_impostos_pis`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `emitente_id` (`emitente_id`);
+
+--
+-- Índices de tabela `emissor_produdos_servicos`
+--
+ALTER TABLE `emissor_produdos_servicos`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `emitente_id` (`emitente_id`),
+  ADD KEY `emissor_impostos_cofins_id` (`emissor_impostos_cofins_id`),
+  ADD KEY `emissor_impostos_icms_id` (`emissor_impostos_icms_id`),
+  ADD KEY `emissor_impostos_ii_id` (`emissor_impostos_ii_id`),
+  ADD KEY `emissor_impostos_ipi_id` (`emissor_impostos_ipi_id`),
+  ADD KEY `emissor_impostos_pis_id` (`emissor_impostos_pis_id`);
 
 --
 -- Índices de tabela `emissor_tipos_bandeiras_cartoes`
@@ -18400,6 +19293,13 @@ ALTER TABLE `emissor_tipos_generos`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Índices de tabela `emissor_tipos_identificadores_destinatarios`
+--
+ALTER TABLE `emissor_tipos_identificadores_destinatarios`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `indIEDest` (`indIEDest`);
+
+--
 -- Índices de tabela `emissor_tipos_identificadores_destinos_operacoes`
 --
 ALTER TABLE `emissor_tipos_identificadores_destinos_operacoes`
@@ -18411,6 +19311,12 @@ ALTER TABLE `emissor_tipos_identificadores_destinos_operacoes`
 ALTER TABLE `emissor_tipos_impostos_icms_csts`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `CST` (`CST`);
+
+--
+-- Índices de tabela `emissor_tipos_impostos_icms_origem`
+--
+ALTER TABLE `emissor_tipos_impostos_icms_origem`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Índices de tabela `emissor_tipos_impressoes`
@@ -18429,6 +19335,12 @@ ALTER TABLE `emissor_tipos_meios_pagamentos`
 -- Índices de tabela `emissor_tipos_modelos`
 --
 ALTER TABLE `emissor_tipos_modelos`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Índices de tabela `emissor_tipos_modos_fretes`
+--
+ALTER TABLE `emissor_tipos_modos_fretes`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -18462,17 +19374,17 @@ ALTER TABLE `emissor_tipos_regimes_tributarios`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Índices de tabela `emissor_tipos_ricms`
+--
+ALTER TABLE `emissor_tipos_ricms`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Índices de tabela `emissor_tipos_veiculos`
 --
 ALTER TABLE `emissor_tipos_veiculos`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `tpVeic` (`tpVeic`);
-
---
--- Índices de tabela `pais`
---
-ALTER TABLE `pais`
-  ADD PRIMARY KEY (`id`);
 
 --
 -- AUTO_INCREMENT de tabelas apagadas
@@ -18500,6 +19412,72 @@ ALTER TABLE `emissor_cadastros_enderecos`
 -- AUTO_INCREMENT de tabela `emissor_cadastros_tipos`
 --
 ALTER TABLE `emissor_cadastros_tipos`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de tabela `emissor_documentos`
+--
+ALTER TABLE `emissor_documentos`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de tabela `emissor_documentos_itens`
+--
+ALTER TABLE `emissor_documentos_itens`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de tabela `emissor_documentos_refctes`
+--
+ALTER TABLE `emissor_documentos_refctes`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de tabela `emissor_documentos_refnfes`
+--
+ALTER TABLE `emissor_documentos_refnfes`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de tabela `emissor_documentos_volumes`
+--
+ALTER TABLE `emissor_documentos_volumes`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de tabela `emissor_impostos_cofins`
+--
+ALTER TABLE `emissor_impostos_cofins`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de tabela `emissor_impostos_icms`
+--
+ALTER TABLE `emissor_impostos_icms`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de tabela `emissor_impostos_ii`
+--
+ALTER TABLE `emissor_impostos_ii`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de tabela `emissor_impostos_ipi`
+--
+ALTER TABLE `emissor_impostos_ipi`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de tabela `emissor_impostos_pis`
+--
+ALTER TABLE `emissor_impostos_pis`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de tabela `emissor_produdos_servicos`
+--
+ALTER TABLE `emissor_produdos_servicos`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
@@ -18551,6 +19529,12 @@ ALTER TABLE `emissor_tipos_generos`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=101;
 
 --
+-- AUTO_INCREMENT de tabela `emissor_tipos_identificadores_destinatarios`
+--
+ALTER TABLE `emissor_tipos_identificadores_destinatarios`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
 -- AUTO_INCREMENT de tabela `emissor_tipos_identificadores_destinos_operacoes`
 --
 ALTER TABLE `emissor_tipos_identificadores_destinos_operacoes`
@@ -18561,6 +19545,12 @@ ALTER TABLE `emissor_tipos_identificadores_destinos_operacoes`
 --
 ALTER TABLE `emissor_tipos_impostos_icms_csts`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+
+--
+-- AUTO_INCREMENT de tabela `emissor_tipos_impostos_icms_origem`
+--
+ALTER TABLE `emissor_tipos_impostos_icms_origem`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de tabela `emissor_tipos_impressoes`
@@ -18579,6 +19569,12 @@ ALTER TABLE `emissor_tipos_meios_pagamentos`
 --
 ALTER TABLE `emissor_tipos_modelos`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT de tabela `emissor_tipos_modos_fretes`
+--
+ALTER TABLE `emissor_tipos_modos_fretes`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de tabela `emissor_tipos_ncms`
@@ -18611,6 +19607,12 @@ ALTER TABLE `emissor_tipos_regimes_tributarios`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
+-- AUTO_INCREMENT de tabela `emissor_tipos_ricms`
+--
+ALTER TABLE `emissor_tipos_ricms`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=703;
+
+--
 -- AUTO_INCREMENT de tabela `emissor_tipos_veiculos`
 --
 ALTER TABLE `emissor_tipos_veiculos`
@@ -18621,17 +19623,24 @@ ALTER TABLE `emissor_tipos_veiculos`
 --
 
 --
+-- Restrições para tabelas `emissor_cadastros_dados_emissores`
+--
+ALTER TABLE `emissor_cadastros_dados_emissores`
+  ADD CONSTRAINT `emissor_cadastros_dados_emissores_ibfk_1` FOREIGN KEY (`emissor_cadastros_dados_id`) REFERENCES `emissor_cadastros_dados` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  ADD CONSTRAINT `emissor_cadastros_dados_emissores_ibfk_2` FOREIGN KEY (`emissor_tipos_regimes_tributarios_id`) REFERENCES `emissor_tipos_regimes_tributarios` (`id`) ON UPDATE NO ACTION;
+
+--
 -- Restrições para tabelas `emissor_cadastros_enderecos`
 --
 ALTER TABLE `emissor_cadastros_enderecos`
-  ADD CONSTRAINT `emissor_cadastros_enderecos_ibfk_1` FOREIGN KEY (`emissor_cadastro_dados_id`) REFERENCES `emissor_cadastros_dados` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
+  ADD CONSTRAINT `emissor_cadastros_enderecos_ibfk_1` FOREIGN KEY (`emissor_cadastros_dados_id`) REFERENCES `emissor_cadastros_dados` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
 
 --
 -- Restrições para tabelas `emissor_cadastros_tipos`
 --
 ALTER TABLE `emissor_cadastros_tipos`
-  ADD CONSTRAINT `emissor_cadastros_tipos_ibfk_1` FOREIGN KEY (`emissor_cadastro_dado_id`) REFERENCES `emissor_cadastros_dados` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  ADD CONSTRAINT `emissor_cadastros_tipos_ibfk_2` FOREIGN KEY (`emissor_tipo_cadastro_id`) REFERENCES `emissor_tipos_cadastros` (`id`) ON UPDATE NO ACTION;
+  ADD CONSTRAINT `emissor_cadastros_tipos_ibfk_1` FOREIGN KEY (`emissor_cadastros_dados_id`) REFERENCES `emissor_cadastros_dados` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  ADD CONSTRAINT `emissor_cadastros_tipos_ibfk_2` FOREIGN KEY (`emissor_tipos_cadastros_id`) REFERENCES `emissor_tipos_cadastros` (`id`) ON UPDATE NO ACTION;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
