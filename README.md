@@ -35,6 +35,12 @@ Este projeto tem como objetivo estabelecer uma ferramenta de emissão de documen
 - [x] entrega = @NewtonMan
 - [x] det = @NewtonMan
     - [x] prod = @NewtonMan
+        - [ ] veicProd
+        - [ ] med
+        - [ ] arma
+        - [ ] comb
+        - [ ] nRECOPI
+        - [ ] rastro
     - [x] imposto = @NewtonMan
         - [x] ICMS = @NewtonMan
             - [x] ICMSUFDest = @NewtonMan
