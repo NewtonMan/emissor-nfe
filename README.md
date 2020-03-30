@@ -3,6 +3,8 @@ Sistema para emissão de documentos fiscais baseado em PHP.
 
 Este projeto tem como objetivo estabelecer uma ferramenta de emissão de documento fiscal colaborativa open-source, temos muitos desenvolvedores trabalhando em seus emissores quando poderiamos juntos colaborar nestas funcionalidades que temos em comum e ganharmos tempo para focar em outros aspectos de nossas aplicações e negócios, fazendo valer os ganhos do trabalho open-source.
 
+***Não sabe codar? Ajude o desenvolvedor finaneiramente com qualquer quantia via PayPal para newtonpasqualini@gmail.com***
+
 ## Stack para Desenvolvimento
  - CakePHP 4
  - Bootstrap 4
